@@ -1,0 +1,45 @@
+# Canonical channel layout for CHB-MIT, frozen from the real chb01 audit
+# (results/data_audit/channel_inventory_raw.csv, 40/40 records at 100% presence).
+# See src/eeg_seizure/data/channels.py for how this is applied.
+#
+# T8-P8 appears twice on purpose: chb01's montage genuinely declares two
+# distinct electrode-pair channels both literally named "T8-P8" (positions 14
+# and 22 in the raw channel order). This is not a duplicate-name bug.
+canonical_channels:
+  - FP1-F7
+  - F7-T7
+  - T7-P7
+  - P7-O1
+  - FP1-F3
+  - F3-C3
+  - C3-P3
+  - P3-O1
+  - FP2-F4
+  - F4-C4
+  - C4-P4
+  - P4-O2
+  - FP2-F8
+  - F8-T8
+  - T8-P8
+  - P8-O2
+  - FZ-CZ
+  - CZ-PZ
+  - P7-T7
+  - T7-FT9
+  - FT9-FT10
+  - FT10-T8
+  - T8-P8
+
+# Channel names dropped outright before harmonization (exact match), e.g. dummy
+# placeholder channels PhysioNet documents for some CHB-MIT subjects.
+drop_patterns:
+  - "-"
+
+# When true, also drop any channel whose name contains ECG/EKG/VNS
+# (case-insensitive) -- non-EEG signals PhysioNet documents as present in some
+# CHB-MIT recordings.
+drop_non_eeg: true
+
+# A record missing any canonical channel (after drops) is excluded entirely
+# rather than padded or partially harmonized.
+missing_channel_policy: exclude_record

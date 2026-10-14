@@ -1,0 +1,41 @@
+{
+  "generated_at": "2026-09-09T08:25:32.151325+00:00",
+  "data_root": "physionet.org/files/chbmit/1.0.0",
+  "subjects_found": [
+    "chb01",
+    "chb02",
+    "chb03",
+    "chb04",
+    "chb05",
+    "chb06",
+    "chb07",
+    "chb08",
+    "chb09",
+    "chb10",
+    "chb11",
+    "chb12",
+    "chb13"
+  ],
+  "n_subjects_found": 13,
+  "n_edf_files_found": 289,
+  "n_edf_files_expected": 664,
+  "n_seizure_files_found": 56,
+  "n_seizure_files_expected": 129,
+  "n_seizures_found": 89,
+  "n_seizures_expected": 198,
+  "sampling_rates_found_hz": [
+    256.0
+  ],
+  "sampling_rate_expected_hz": 256.0,
+  "sha256sums_reference_found": false,
+  "n_records_read_via_mne_fallback": 8,
+  "n_records_corrupt_unreadable": 0,
+  "discrepancies": [
+    "EDF file count is 289, expected 664 (full CHB-MIT archive likely not fully downloaded locally).",
+    "Seizure-containing file count is 56, expected 129.",
+    "Seizure count is 89, expected 198.",
+    "101 record(s) listed in a summary.txt have no matching EDF file on disk: ['chb01:chb01_11', 'chb01:chb01_12', 'chb01:chb01_13', 'chb01:chb01_14', 'chb01:chb01_15', 'chb01:chb01_16', 'chb01:chb01_17', 'chb01:chb01_18', 'chb01:chb01_19', 'chb01:chb01_20', 'chb01:chb01_21', 'chb01:chb01_22', 'chb01:chb01_23', 'chb01:chb01_24', 'chb01:chb01_25', 'chb01:chb01_26', 'chb01:chb01_27', 'chb01:chb01_29', 'chb01:chb01_30', 'chb01:chb01_31', 'chb01:chb01_32', 'chb01:chb01_33', 'chb01:chb01_34', 'chb01:chb01_36', 'chb01:chb01_37', 'chb01:chb01_38', 'chb01:chb01_39', 'chb01:chb01_40', 'chb01:chb01_41', 'chb01:chb01_42', 'chb01:chb01_43', 'chb01:chb01_46', 'chb02:chb02_31', 'chb02:chb02_32', 'chb02:chb02_33', 'chb02:chb02_34', 'chb02:chb02_35', 'chb03:chb03_31', 'chb03:chb03_32', 'chb03:chb03_33', 'chb03:chb03_34', 'chb03:chb03_35', 'chb03:chb03_36', 'chb03:chb03_37', 'chb03:chb03_38', 'chb04:chb04_10', 'chb04:chb04_11', 'chb04:chb04_12', 'chb04:chb04_13', 'chb04:chb04_14', 'chb04:chb04_15', 'chb04:chb04_16', 'chb04:chb04_17', 'chb04:chb04_18', 'chb04:chb04_19', 'chb04:chb04_21', 'chb04:chb04_22', 'chb04:chb04_23', 'chb04:chb04_24', 'chb04:chb04_25', 'chb04:chb04_26', 'chb04:chb04_27', 'chb04:chb04_28', 'chb04:chb04_29', 'chb04:chb04_30', 'chb04:chb04_31', 'chb04:chb04_32', 'chb04:chb04_33', 'chb04:chb04_34', 'chb04:chb04_35', 'chb04:chb04_36', 'chb04:chb04_37', 'chb04:chb04_38', 'chb04:chb04_39', 'chb04:chb04_40', 'chb04:chb04_41', 'chb04:chb04_42', 'chb04:chb04_43', 'chb05:chb05_31', 'chb05:chb05_32', 'chb05:chb05_33', 'chb05:chb05_34', 'chb05:chb05_35', 'chb05:chb05_36', 'chb05:chb05_37', 'chb05:chb05_38', 'chb05:chb05_39', 'chb06:chb06_09', 'chb06:chb06_10', 'chb06:chb06_12', 'chb06:chb06_13', 'chb06:chb06_14', 'chb06:chb06_15', 'chb06:chb06_16', 'chb06:chb06_17', 'chb06:chb06_18', 'chb06:chb06_24', 'chb13:chb13_58', 'chb13:chb13_59', 'chb13:chb13_60', 'chb13:chb13_62']",
+    "8 record(s) failed pyedflib's strict header check and were read via MNE's more lenient fallback instead: ['chb01/chb01_10: /Users/yiranzhu/Desktop/python/EEG Elipsy/physionet.org/files/chbmit/1.0.0/chb01/chb01_10.edf: the file is not EDF(+) or BDF(+) compliant (Filesize)', 'chb02/chb02_30: /Users/yiranzhu/Desktop/python/EEG Elipsy/physionet.org/files/chbmit/1.0.0/chb02/chb02_30.edf: the file is not EDF(+) or BDF(+) compliant (Filesize)', 'chb03/chb03_30: /Users/yiranzhu/Desktop/python/EEG Elipsy/physionet.org/files/chbmit/1.0.0/chb03/chb03_30.edf: the file is not EDF(+) or BDF(+) compliant (Filesize)', 'chb04/chb04_09: /Users/yiranzhu/Desktop/python/EEG Elipsy/physionet.org/files/chbmit/1.0.0/chb04/chb04_09.edf: the file is not EDF(+) or BDF(+) compliant (Filesize)', 'chb05/chb05_30: /Users/yiranzhu/Desktop/python/EEG Elipsy/physionet.org/files/chbmit/1.0.0/chb05/chb05_30.edf: the file is not EDF(+) or BDF(+) compliant (Filesize)', 'chb06/chb06_08: /Users/yiranzhu/Desktop/python/EEG Elipsy/physionet.org/files/chbmit/1.0.0/chb06/chb06_08.edf: the file is not EDF(+) or BDF(+) compliant (Filesize)', 'chb12/chb12_42: /Users/yiranzhu/Desktop/python/EEG Elipsy/physionet.org/files/chbmit/1.0.0/chb12/chb12_42.edf: the file is not EDF(+) or BDF(+) compliant (Filesize)', 'chb13/chb13_56: /Users/yiranzhu/Desktop/python/EEG Elipsy/physionet.org/files/chbmit/1.0.0/chb13/chb13_56.edf: the file is not EDF(+) or BDF(+) compliant (Filesize)']",
+    "No SHA256SUMS.txt present locally; checksums were computed but not cross-checked against PhysioNet's published hashes."
+  ]
+}

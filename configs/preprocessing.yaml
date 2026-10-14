@@ -1,0 +1,6 @@
+# Band-pass filter passband for src/eeg_seizure/data/preprocessing.py, per the
+# "Filtering and windows" section of Grand Development Plan.md. Zero-phase FIR,
+# attenuates outside [low_hz, high_hz]; not artifact removal.
+bandpass:
+  low_hz: 0.5
+  high_hz: 40.0

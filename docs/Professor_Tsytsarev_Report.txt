@@ -1,0 +1,161 @@
+PROFESSOR PROFILE REPORT
+Dr. Vassiliy Tsytsarev — Instructor, Johns Hopkins University
+Engineering for Professionals (EP), Johns Hopkins University
+Faculty page: https://ep.jhu.edu/faculty/vassiliy-tsytsarev/
+Prepared: 2026-08-27
+
+================================================================
+1. BACKGROUND AND MAJOR
+================================================================
+
+Dr. Vassiliy Tsytsarev holds a Ph.D. in Neuroscience from Saint Petersburg
+State University, Russia. He began his international research career in
+Japan, spending roughly seven years at RIKEN's Brain Science Institute and
+the Human Brain Research Center in Kyoto, where he focused on auditory
+neuroscience using intrinsic optical imaging and voltage-sensitive dye (VSD)
+imaging. He subsequently moved to the United States, holding research
+positions at several institutions including the University of Maryland
+School of Medicine, before joining Johns Hopkins University, where he now
+serves as an instructor in the Engineering for Professionals program.
+
+His disciplinary home sits at the intersection of neuroscience,
+neurotechnology, optical/biomedical imaging, and biomedical engineering —
+he is trained as a neuroscientist but works with the instrumentation and
+signal-processing toolkit of an engineer, which is exactly the profile
+suited to teaching in an engineering (rather than a pure life-sciences)
+graduate program.
+
+He has authored or co-authored 60+ peer-reviewed articles and multiple
+book/handbook chapters.
+
+================================================================
+2. MAJOR AREAS OF FOCUS
+================================================================
+
+- Epilepsy and seizure research — mechanisms, detection, and imaging of
+  epileptic activity in animal (primarily rodent) models.
+- Functional brain imaging using optical methods: intrinsic optical
+  signal (IOS) imaging, voltage-sensitive dye (VSD) imaging, laser
+  speckle contrast imaging, and photoacoustic/optical coherence
+  tomography (dual-contrast, high spatiotemporal resolution).
+- Neurovascular coupling — how neural activity relates to local blood
+  flow/metabolism changes, a core mechanism underlying many functional
+  imaging signals.
+- Neural circuits and the dopamine system.
+- Traumatic brain injury and neural regeneration.
+- Emerging neurotechnology and neurophotonics (optical sensors, novel
+  imaging modalities for brain monitoring).
+
+Representative publications:
+- "Optical Imaging of Epileptic Seizures," Handbook of Neuroengineering,
+  Springer (2022) — covers intrinsic optical imaging and VSD imaging
+  techniques for seizure visualization.
+- "In vivo laser speckle contrast imaging of 4-aminopyridine- or
+  pentylenetetrazole-induced seizures," APL Bioengineering (2023).
+- "Photoacoustic and optical coherence tomography of epilepsy with high
+  temporal and spatial resolution and dual optical contrasts," Journal
+  of Neuroscience Methods (2013).
+- "Transcranial Dynamic Fluorescence Imaging for the Study of Epileptic
+  Seizures."
+
+================================================================
+3. RELATION TO THE EEG ELIPSY PROJECT
+================================================================
+
+This project (EEG Elipsy) builds a patient-independent seizure detection
+pipeline on the CHB-MIT scalp EEG dataset: EDF ingestion, seizure
+annotation parsing, windowing, patient-independent fold splitting,
+spectral feature extraction, and classical-ML baselines (with a CNN
+pipeline planned next). The core scientific object in both his lab and
+this project is the same thing — the electrical/optical signature of
+epileptic seizure activity in the brain — but captured through different
+sensing modalities:
+
+- Dr. Tsytsarev's work reads seizures through OPTICAL signals (VSD,
+  intrinsic signal, laser speckle, photoacoustic/OCT) recorded directly
+  from cortex in animal models, at high spatial resolution but typically
+  in controlled, invasive, single-animal settings.
+- This project reads seizures through scalp EEG, a purely ELECTRICAL,
+  non-invasive, clinical-scale signal, across many human patients, with
+  the goal of automated, generalizable (patient-independent) detection.
+
+The two modalities are complementary views of the same underlying
+neurovascular/neuroelectric event: EEG captures the electrical
+discharge directly and near-instantaneously; his optical methods
+(especially those tied to neurovascular coupling) capture the slower
+hemodynamic/metabolic response that electrical activity triggers. A
+researcher who studies both modalities' relationship is well positioned
+to evaluate whether a purely electrical (EEG-based) detection pipeline
+is capturing the same seizure onset/propagation dynamics that optical
+imaging shows at the cortical-surface level in animal models — this is
+one of the most direct and substantive points of overlap between his
+expertise and this project's subject matter.
+
+================================================================
+4. HOW THIS PROJECT COULD BE RELEVANT/HELPFUL TO HIS WORK
+================================================================
+
+- Cross-modal validation: The spectral/temporal seizure signatures this
+  project extracts from EEG (band power features, onset/offset timing
+  from annotations, patient-independent generalization results) could
+  serve as a human-scale, non-invasive electrical reference against
+  which his animal optical-imaging findings on seizure propagation and
+  neurovascular coupling could be compared or contextualized.
+- Signal-processing and ML methodology transfer: This project's
+  pipeline architecture — batched spectral feature extraction (Welch's
+  method), rigorous per-fold scaler fitting to avoid leakage,
+  patient-independent splitting — is a template that could be adapted to
+  his optical imaging data (e.g., automated seizure event detection in
+  laser speckle or VSD recordings), which currently likely relies more
+  on manual or simpler thresholding approaches.
+- Multimodal seizure detection framework: If his lab pursues combined
+  EEG + optical imaging experiments (a natural next step in
+  neurovascular-coupling research), this project's EEG feature-extraction
+  and classification codebase could serve as the EEG-side component of
+  a multimodal pipeline, with his optical data providing the
+  complementary hemodynamic channel.
+- Teaching value: As an EP instructor, he may find this project useful
+  as a concrete, well-documented example of an end-to-end biomedical
+  signal-processing/ML pipeline (data auditing, quality gates, feature
+  engineering, patient-independent evaluation) for coursework or student
+  projects on biomedical signal analysis.
+
+================================================================
+5. SUMMARY
+================================================================
+
+Dr. Tsytsarev is a neuroscientist-engineer whose career centers on
+optical imaging of epileptic seizures and neurovascular coupling in
+animal models. This project's EEG-based, patient-independent seizure
+detection pipeline studies the same phenomenon (epileptic seizures)
+through a different, clinically dominant sensing modality (scalp EEG)
+at human scale. The overlap is substantive rather than superficial:
+both efforts are ultimately trying to characterize when and how seizure
+activity manifests and propagates, using rigorous signal-processing and
+quantitative methods — making him a strong domain mentor for grounding
+this project's biological/clinical interpretation, and making this
+project a plausible methodological or comparative asset for his own
+research program.
+
+================================================================
+SOURCES
+================================================================
+- https://ep.jhu.edu/faculty/vassiliy-tsytsarev/
+- https://ep.jhu.edu/about-us/faculty-directory/1699-vassiliy-tsytsarev
+- https://www.researchgate.net/profile/Vassiliy-Tsytsarev
+- https://scholar.google.com/citations?user=gHmwrMgAAAAJ&hl=en
+- https://link.springer.com/referenceworkentry/10.1007/978-981-15-2848-4_124-2
+  ("Optical Imaging of Epileptic Seizures")
+- https://pubs.aip.org/aip/apb/article/7/3/036119/2913653/
+  ("In vivo laser speckle contrast imaging of 4-aminopyridine- or
+  pentylenetetrazole-induced seizures")
+- Journal of Neuroscience Methods (2013), "Photoacoustic and optical
+  coherence tomography of epilepsy..."
+
+Note: The faculty page itself (ep.jhu.edu/faculty/vassiliy-tsytsarev/)
+returned an HTTP 403 when fetched directly, so this report was compiled
+from web search results, his ResearchGate/Google Scholar profiles, and
+publication records rather than the raw page HTML. If you have direct
+access to the faculty page or his CV, it's worth cross-checking exact
+current title and any JHU-specific project descriptions not indexed
+above.

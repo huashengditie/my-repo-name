@@ -1,0 +1,38 @@
+[project]
+name = "eeg-seizure"
+version = "0.1.0"
+description = "Patient-independent, efficiency-aware seizure detection from scalp EEG (CHB-MIT)."
+requires-python = ">=3.11,<3.13"
+dependencies = [
+    "torch==2.13.0",
+    "numpy==2.4.6",
+    "scipy==1.17.1",
+    "pandas==3.0.5",
+    "pyarrow==22.0.0",
+    "mne==1.11.0",
+    "pyedflib==0.1.42",
+    "scikit-learn==1.9.0",
+    "matplotlib==3.11.1",
+    "tensorboard==2.20.0",
+    "pytest==8.4.2",
+    "pyyaml==6.0.3",
+    "tqdm==4.70.0",
+    "ruff==0.14.5",
+]
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.ruff]
+line-length = 100
+src = ["src", "scripts", "tests"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

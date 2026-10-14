@@ -1,0 +1,80 @@
+{
+  "experiment_id": "cnn1d_fold_0",
+  "git_commit_hash": "44262735e1bb1b67350d118403d033348759f84d",
+  "config": {
+    "model": {
+      "conv_blocks": [
+        {
+          "out_channels": 32,
+          "kernel_size": 7,
+          "stride": 1,
+          "padding": 3,
+          "batch_norm": true,
+          "pool_size": 4
+        },
+        {
+          "out_channels": 64,
+          "kernel_size": 5,
+          "stride": 1,
+          "padding": 2,
+          "batch_norm": true,
+          "pool_size": 4
+        },
+        {
+          "out_channels": 128,
+          "kernel_size": 3,
+          "stride": 1,
+          "padding": 1,
+          "batch_norm": false,
+          "pool_size": null
+        }
+      ],
+      "num_classes": 1
+    },
+    "trainer": {
+      "max_epochs": 3,
+      "patience": 2,
+      "learning_rate": 0.001,
+      "optimizer_name": "adam"
+    },
+    "batch_size": 64,
+    "num_workers": 2
+  },
+  "seed": 2026,
+  "fold": 0,
+  "model": "cnn1d",
+  "optimizer": "adam",
+  "learning_rate": 0.001,
+  "pos_weight": 324.62863534675614,
+  "epochs_run": 3,
+  "best_epoch": 0,
+  "threshold": 0.6180077791213989,
+  "metrics": {
+    "auroc": 0.8342871374435221,
+    "sensitivity": 0.6582914572864321,
+    "specificity": 0.8567397913431465,
+    "confusion_matrix": {
+      "tp": 131,
+      "tn": 117513,
+      "fp": 19650,
+      "fn": 68
+    }
+  },
+  "checkpoint_path": "/Users/yiranzhu/Desktop/python/EEG Elipsy/results/checkpoints/cnn1d_fold_0.pt",
+  "hardware": "cpu:arm",
+  "software_versions": {
+    "python": "3.11.15",
+    "torch": "2.13.0",
+    "mne": "1.11.0"
+  },
+  "loss_history": [
+    0.4809097952070049,
+    0.3087446007650456,
+    0.26134214607551565
+  ],
+  "val_auroc_history": [
+    0.7574993879727051,
+    0.7559135131021135,
+    0.752064350502694
+  ]
+}

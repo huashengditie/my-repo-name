@@ -1,0 +1,2 @@
+fold,experiment_id,sample_fraction,n_fit_total,n_fit_sampled,n_val,n_test,auroc,sensitivity,specificity,threshold,epochs_run,best_epoch,pos_weight,parameter_count,checkpoint_path
+0,compact_cnn1d_fold_0_fit0.2,0.2,494877,98974,137362,134285,0.7133024614626822,0.6284403669724771,0.6569103507947519,-0.33585694432258606,3,2,223.9409090909091,5041,/Users/yiranzhu/Desktop/python/EEG Elipsy/results/checkpoints/compact_cnn1d_fold_0_fit0.2.pt

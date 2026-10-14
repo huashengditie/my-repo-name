@@ -1,0 +1,36 @@
+{
+  "fold": 2,
+  "n_splits": 5,
+  "random_state": 2026,
+  "test_subjects": [
+    "subject_01",
+    "subject_03",
+    "subject_11"
+  ],
+  "train_subjects": [
+    "subject_02",
+    "subject_04",
+    "subject_05",
+    "subject_06",
+    "subject_07",
+    "subject_08",
+    "subject_09",
+    "subject_10",
+    "subject_12",
+    "subject_13"
+  ],
+  "fit_subjects": [
+    "subject_02",
+    "subject_04",
+    "subject_05",
+    "subject_07",
+    "subject_08",
+    "subject_09",
+    "subject_12",
+    "subject_13"
+  ],
+  "val_subjects": [
+    "subject_06",
+    "subject_10"
+  ]
+}

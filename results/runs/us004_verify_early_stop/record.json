@@ -1,0 +1,39 @@
+{
+  "experiment_id": "us004_verify_early_stop",
+  "git_commit_hash": "66f28f2dfdc0269e326ffca2f2ee72afa6e4212d",
+  "config": {
+    "trainer": {
+      "max_epochs": 8,
+      "patience": 2,
+      "learning_rate": 0.001,
+      "optimizer_name": "adam"
+    }
+  },
+  "seed": 2026,
+  "fold": 0,
+  "model": "cnn1d",
+  "optimizer": "adam",
+  "learning_rate": 0.001,
+  "pos_weight": 1.0,
+  "epochs_run": 3,
+  "best_epoch": 0,
+  "threshold": null,
+  "metrics": null,
+  "checkpoint_path": "/Users/yiranzhu/Desktop/python/EEG Elipsy/results/checkpoints/us004_verify_early_stop.pt",
+  "hardware": "cpu:arm",
+  "software_versions": {
+    "python": "3.11.15",
+    "torch": "2.13.0",
+    "mne": "1.11.0"
+  },
+  "loss_history": [
+    0.2605711668729782,
+    0.03400552929379046,
+    0.0037258838885463772
+  ],
+  "val_auroc_history": [
+    0.9,
+    0.7,
+    0.6
+  ]
+}

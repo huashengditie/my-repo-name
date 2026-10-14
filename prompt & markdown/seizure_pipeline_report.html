@@ -1,0 +1,715 @@
+<title>Seizure Pipeline Design</title>
+<style>
+  :root {
+    --paper: #f1f4f3;
+    --paper-raised: #ffffff;
+    --ink: #161b1e;
+    --ink-muted: #56686c;
+    --ink-faint: #8a999b;
+    --line: #d7dedc;
+    --accent: #0f7c82;
+    --accent-ink: #085055;
+    --accent-soft: #dcefee;
+    --warn: #a8681f;
+    --warn-soft: #f3e6d2;
+    --critical: #a8412c;
+    --critical-soft: #f6e0da;
+    --good: #2f7d4f;
+    --good-soft: #dcefe1;
+    --font-display: "Source Serif 4", Georgia, "Times New Roman", serif;
+    --font-body: "IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
+    --font-mono: "IBM Plex Mono", "SFMono-Regular", Consolas, monospace;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --paper: #14181a;
+      --paper-raised: #1b2124;
+      --ink: #e9edec;
+      --ink-muted: #9db0b2;
+      --ink-faint: #6d7f81;
+      --line: #2c3538;
+      --accent: #3fc0c4;
+      --accent-ink: #b7f0f1;
+      --accent-soft: #17383a;
+      --warn: #d9a15a;
+      --warn-soft: #3a2f1c;
+      --critical: #e07e69;
+      --critical-soft: #3a231e;
+      --good: #6bc492;
+      --good-soft: #1c3327;
+    }
+  }
+  :root[data-theme="dark"] {
+    --paper: #14181a;
+    --paper-raised: #1b2124;
+    --ink: #e9edec;
+    --ink-muted: #9db0b2;
+    --ink-faint: #6d7f81;
+    --line: #2c3538;
+    --accent: #3fc0c4;
+    --accent-ink: #b7f0f1;
+    --accent-soft: #17383a;
+    --warn: #d9a15a;
+    --warn-soft: #3a2f1c;
+    --critical: #e07e69;
+    --critical-soft: #3a231e;
+    --good: #6bc492;
+    --good-soft: #1c3327;
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--font-body);
+    font-size: 16px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  ::selection { background: var(--accent-soft); color: var(--accent-ink); }
+
+  a { color: var(--accent-ink); }
+
+  .page {
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: clamp(28px, 6vw, 64px) clamp(18px, 4vw, 40px) 120px;
+    display: grid;
+    grid-template-columns: minmax(0, 780px);
+    justify-content: center;
+    gap: 0;
+  }
+
+  /* ---------- Masthead ---------- */
+  .masthead {
+    border-bottom: 2px solid var(--ink);
+    padding-bottom: 22px;
+    margin-bottom: 44px;
+  }
+  .kicker {
+    font-family: var(--font-mono);
+    font-size: 12.5px;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    color: var(--accent-ink);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 14px;
+  }
+  .kicker::before {
+    content: "";
+    width: 22px;
+    height: 1px;
+    background: var(--accent);
+    display: inline-block;
+  }
+  h1.title {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: clamp(30px, 4.4vw, 44px);
+    line-height: 1.12;
+    letter-spacing: -0.01em;
+    text-wrap: balance;
+    margin: 0 0 12px;
+  }
+  .dek {
+    font-size: 17px;
+    color: var(--ink-muted);
+    max-width: 62ch;
+    margin: 0 0 22px;
+  }
+  .meta-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px 22px;
+    font-family: var(--font-mono);
+    font-size: 12.5px;
+    color: var(--ink-muted);
+  }
+  .meta-row span b { color: var(--ink); font-weight: 500; }
+
+  /* ---------- Section rhythm ---------- */
+  section { margin-top: 68px; scroll-margin-top: 24px; }
+  section:first-of-type { margin-top: 0; }
+
+  .section-head {
+    display: flex;
+    align-items: baseline;
+    gap: 14px;
+    margin-bottom: 22px;
+  }
+  .section-num {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    color: var(--accent-ink);
+    background: var(--accent-soft);
+    border-radius: 999px;
+    padding: 3px 10px;
+    flex: none;
+  }
+  h2.section-title {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 26px;
+    margin: 0;
+    text-wrap: balance;
+  }
+  h3.sub-title {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 19px;
+    margin: 34px 0 12px;
+  }
+  h3.sub-title:first-of-type { margin-top: 4px; }
+
+  p { margin: 0 0 14px; max-width: 68ch; }
+  .lede { font-size: 17px; color: var(--ink-muted); max-width: 66ch; }
+
+  .callout {
+    border-left: 3px solid var(--accent);
+    background: var(--accent-soft);
+    color: var(--accent-ink);
+    padding: 12px 16px;
+    border-radius: 4px;
+    font-size: 14.5px;
+    max-width: 66ch;
+    margin: 6px 0 20px;
+  }
+  .callout.warn { border-color: var(--warn); background: var(--warn-soft); color: var(--ink); }
+  .callout.critical { border-color: var(--critical); background: var(--critical-soft); color: var(--ink); }
+  .callout code { background: none; padding: 0; }
+
+  /* ---------- Tables ---------- */
+  .table-wrap { overflow-x: auto; margin: 4px 0 22px; border: 1px solid var(--line); border-radius: 6px; }
+  table { border-collapse: collapse; width: 100%; font-size: 14px; background: var(--paper-raised); }
+  caption { text-align: left; font-family: var(--font-mono); font-size: 12px; color: var(--ink-muted); padding: 8px 14px 0; }
+  th, td {
+    text-align: left;
+    padding: 9px 14px;
+    border-bottom: 1px solid var(--line);
+    white-space: nowrap;
+  }
+  th { font-family: var(--font-mono); font-weight: 500; font-size: 12px; letter-spacing: 0.03em; text-transform: uppercase; color: var(--ink-muted); background: color-mix(in srgb, var(--paper) 55%, var(--paper-raised)); }
+  tbody tr:last-child td { border-bottom: none; }
+  td.num, th.num { font-family: var(--font-mono); font-variant-numeric: tabular-nums; text-align: right; }
+  td.mono, th.mono { font-family: var(--font-mono); font-size: 13px; }
+  tr.hl td { font-weight: 600; background: color-mix(in srgb, var(--accent-soft) 55%, var(--paper-raised)); }
+  tr.flag td { background: color-mix(in srgb, var(--critical-soft) 45%, var(--paper-raised)); }
+
+  .pill { display: inline-flex; align-items: center; gap: 5px; font-family: var(--font-mono); font-size: 11.5px; padding: 2px 8px; border-radius: 999px; }
+  .pill.pass { background: var(--good-soft); color: var(--good); }
+  .pill.partial { background: var(--warn-soft); color: var(--warn); }
+  .pill.pending { background: color-mix(in srgb, var(--ink-faint) 22%, var(--paper-raised)); color: var(--ink-muted); }
+
+  /* ---------- Parameter cards ---------- */
+  .param-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 1px;
+    background: var(--line);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    overflow: hidden;
+    margin: 4px 0 22px;
+  }
+  .param {
+    background: var(--paper-raised);
+    padding: 12px 14px;
+  }
+  .param dt {
+    font-size: 11.5px;
+    color: var(--ink-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    margin-bottom: 4px;
+  }
+  .param dd {
+    margin: 0;
+    font-family: var(--font-mono);
+    font-size: 14px;
+    color: var(--ink);
+  }
+  .param dd.small { font-size: 12.5px; color: var(--ink-muted); font-family: var(--font-body); }
+
+  /* ---------- Pipeline stepper ---------- */
+  .stepper { position: relative; margin: 8px 0 12px; padding-left: 40px; }
+  .stepper::before {
+    content: "";
+    position: absolute;
+    left: 14px;
+    top: 10px;
+    bottom: 10px;
+    width: 2px;
+    background: linear-gradient(var(--accent), var(--line) 92%);
+  }
+  .step { position: relative; padding-bottom: 26px; }
+  .step:last-child { padding-bottom: 0; }
+  .step-badge {
+    position: absolute;
+    left: -40px;
+    top: 0;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: var(--paper-raised);
+    border: 2px solid var(--accent);
+    color: var(--accent-ink);
+    font-family: var(--font-mono);
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .step-badge.gate { border-color: var(--good); color: var(--good); }
+  .step-title { font-weight: 600; font-size: 15.5px; margin-bottom: 3px; }
+  .step-title .tag { font-family: var(--font-mono); font-size: 11px; color: var(--ink-faint); font-weight: 400; margin-left: 6px; }
+  .step-desc { font-size: 14px; color: var(--ink-muted); max-width: 60ch; }
+  .step-gate { display: inline-flex; align-items: center; gap: 6px; margin-top: 6px; font-family: var(--font-mono); font-size: 12px; }
+
+  /* ---------- TOC (wide viewports) ---------- */
+  .toc {
+    position: fixed;
+    top: 64px;
+    right: max(18px, calc(50% - 590px - 200px));
+    width: 190px;
+    font-size: 12.5px;
+    display: none;
+  }
+  .toc a {
+    display: block;
+    color: var(--ink-muted);
+    text-decoration: none;
+    padding: 5px 0 5px 12px;
+    border-left: 2px solid var(--line);
+    transition: color .15s, border-color .15s;
+  }
+  .toc a:hover { color: var(--ink); }
+  .toc a.active { color: var(--accent-ink); border-color: var(--accent); font-weight: 600; }
+  @media (min-width: 1180px) { .toc { display: block; } }
+
+  /* ---------- Discussion prose ---------- */
+  .discuss h3 { display: flex; align-items: center; gap: 8px; }
+  .discuss h3::before { content: "\2014"; color: var(--accent); font-weight: 400; }
+
+  footer.report-foot {
+    margin-top: 80px;
+    padding-top: 22px;
+    border-top: 1px solid var(--line);
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--ink-faint);
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  code { font-family: var(--font-mono); background: color-mix(in srgb, var(--ink-faint) 14%, transparent); padding: 1px 5px; border-radius: 3px; font-size: 0.92em; }
+
+  @media (prefers-reduced-motion: no-preference) {
+    section { animation: rise .5s ease-out both; }
+    @keyframes rise { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+  }
+</style>
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+
+<nav class="toc" id="toc">
+  <a href="#overview">Overview</a>
+  <a href="#pipeline">The pipeline</a>
+  <a href="#parameters">Parameters</a>
+  <a href="#results">Results</a>
+  <a href="#discussion">Discussion</a>
+  <a href="#status">Status vs. plan</a>
+</nav>
+
+<div class="page">
+
+  <header class="masthead">
+    <div class="kicker">Technical report · CHB-MIT seizure detection</div>
+    <h1 class="title">The seizure-detection pipeline: design, parameters, and results</h1>
+    <p class="dek">
+      A complete, parameter-level account of the pathway built for patient-independent scalp-EEG
+      seizure detection — from raw EDF audit through a Standard 1D CNN — evaluated on the
+      current 11-subject CHB-MIT archive, with a discussion of what the numbers do and don't show.
+    </p>
+    <div class="meta-row">
+      <span>Prepared <b>2026-09-06</b></span>
+      <span>Archive <b>chb01–chb11, 236 EDF, 43 seizures</b></span>
+      <span>Branch <b>ralph/cnn-main-network</b></span>
+      <span>Reference plan <b>Grand Development Plan.md</b></span>
+    </div>
+  </header>
+
+  <!-- ============ OVERVIEW ============ -->
+  <section id="overview">
+    <div class="section-head"><span class="section-num">§1</span><h2 class="section-title">Overview</h2></div>
+    <p class="lede">
+      The task is binary window classification: does a 4-second slice of 23-channel scalp EEG
+      contain seizure activity? The pipeline turns raw <code>.edf</code> recordings into that
+      decision through nine deterministic stages, each frozen into a config file or module so the
+      whole chain can be re-run byte-for-byte from the same inputs. Two model families sit at the
+      end of the chain — classical spectral-feature classifiers (logistic regression, random
+      forest) and a Standard 1D CNN that reads the filtered waveform directly.
+    </p>
+    <p>
+      Every design choice below traces back to one governing rule: <em>a subject's data lives in
+      exactly one of train, validation, or test — never split across them</em>. Scalp-EEG signal
+      morphology varies enormously between patients, so a random window-level split would let the
+      model memorize a subject's idiosyncrasies rather than learn seizure signal, and would report
+      an optimistic score that collapses on a genuinely new patient. Every number in §4 was produced
+      under that constraint.
+    </p>
+  </section>
+
+  <!-- ============ PIPELINE ============ -->
+  <section id="pipeline">
+    <div class="section-head"><span class="section-num">§2</span><h2 class="section-title">The pipeline, stage by stage</h2></div>
+    <p>Nine stages, four of them closing on a hard pass/fail gate. A gate failure stops the chain — no stage consumes an artifact from a stage that hasn't passed its check.</p>
+
+    <div class="stepper">
+      <div class="step">
+        <div class="step-badge">1</div>
+        <div class="step-title">Dataset audit</div>
+        <div class="step-desc">Reconcile the local archive against PhysioNet's published inventory — file counts, sampling rate, seizure timing validity, channel names.</div>
+      </div>
+      <div class="step">
+        <div class="step-badge gate">A</div>
+        <div class="step-title">Gate A <span class="tag">data integrity</span></div>
+        <div class="step-desc">All EDFs readable, no corrupt files, seizure intervals valid, every channel inventoried.</div>
+        <div class="step-gate"><span class="pill partial">partial — see §6</span></div>
+      </div>
+      <div class="step">
+        <div class="step-badge">2</div>
+        <div class="step-title">Annotation parsing</div>
+        <div class="step-desc">Extract seizure onset/offset seconds per recording from each subject's summary file into one seizure table.</div>
+      </div>
+      <div class="step">
+        <div class="step-badge">3</div>
+        <div class="step-title">Channel harmonization</div>
+        <div class="step-desc">Drop dummy/non-EEG channels, reorder every recording to one fixed 23-channel montage; exclude any recording that can't be completed.</div>
+      </div>
+      <div class="step">
+        <div class="step-badge gate">B</div>
+        <div class="step-title">Gate B <span class="tag">labels + channels</span></div>
+        <div class="step-desc">Every retained window has identical channel count and order.</div>
+        <div class="step-gate"><span class="pill pass">PASS</span></div>
+      </div>
+      <div class="step">
+        <div class="step-badge">4</div>
+        <div class="step-title">Filtering &amp; windowing</div>
+        <div class="step-desc">Zero-phase band-pass filter, slice into fixed-length overlapping windows, label each by seizure overlap fraction.</div>
+      </div>
+      <div class="step">
+        <div class="step-badge">5</div>
+        <div class="step-title">Patient-independent splitting</div>
+        <div class="step-desc">Group-stratified 5-fold split at the subject level; inside each outer fold, a further fit/validation split of the training subjects.</div>
+      </div>
+      <div class="step">
+        <div class="step-badge gate">C</div>
+        <div class="step-title">Gate C <span class="tag">patient splits</span></div>
+        <div class="step-desc">Zero subject overlap between fit, validation, and test in every fold.</div>
+        <div class="step-gate"><span class="pill pass">PASS</span></div>
+      </div>
+      <div class="step">
+        <div class="step-badge">6</div>
+        <div class="step-title">Feature extraction &amp; classical baselines</div>
+        <div class="step-desc">Welch band-power + time-domain features per channel; per-fold scaler fit on training subjects only; logistic regression and random forest.</div>
+      </div>
+      <div class="step">
+        <div class="step-badge gate">D</div>
+        <div class="step-title">Gate D <span class="tag">baselines</span></div>
+        <div class="step-desc">All folds evaluated, thresholds chosen on validation only, mean AUROC beats chance.</div>
+        <div class="step-gate"><span class="pill pass">PASS</span></div>
+      </div>
+      <div class="step">
+        <div class="step-badge">7</div>
+        <div class="step-title">Standard 1D CNN</div>
+        <div class="step-desc">Three-block Conv1D stack trained per fold with weighted BCE, early stopping on validation AUROC, threshold chosen on validation only.</div>
+      </div>
+      <div class="step">
+        <div class="step-badge gate">E</div>
+        <div class="step-title">Gate E <span class="tag">standard CNN</span></div>
+        <div class="step-desc">All five folds train without instability (no NaN/Inf loss); full evaluation path produces a result.</div>
+        <div class="step-gate"><span class="pill pass">PASS</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ PARAMETERS ============ -->
+  <section id="parameters">
+    <div class="section-head"><span class="section-num">§3</span><h2 class="section-title">Parameters, stage by stage</h2></div>
+    <p>Every value below is read from a committed config file or module constant, never a runtime default the caller could silently override.</p>
+
+    <h3 class="sub-title" id="p-source">3.1 Data source</h3>
+    <div class="param-grid">
+      <div class="param"><dt>Dataset</dt><dd>CHB-MIT Scalp EEG, PhysioNet 1.0.0</dd></div>
+      <div class="param"><dt>Local subjects</dt><dd>chb01–chb11 (11 of ~24)</dd></div>
+      <div class="param"><dt>EDF files</dt><dd>236</dd></div>
+      <div class="param"><dt>Sampling rate</dt><dd>256 Hz</dd></div>
+      <div class="param"><dt>Annotated seizures</dt><dd>43</dd></div>
+      <div class="param"><dt>Seizure-containing files</dt><dd>39</dd></div>
+    </div>
+
+    <h3 class="sub-title" id="p-prep">3.2 Filtering &amp; normalization</h3>
+    <div class="param-grid">
+      <div class="param"><dt>Band-pass low</dt><dd>0.5 Hz</dd></div>
+      <div class="param"><dt>Band-pass high</dt><dd>40.0 Hz</dd></div>
+      <div class="param"><dt>Filter type</dt><dd>FIR, zero-phase (MNE)</dd></div>
+      <div class="param"><dt>Normalization</dt><dd>per-window, per-channel z-score</dd></div>
+      <div class="param"><dt>Canonical channels</dt><dd>23</dd></div>
+      <div class="param"><dt>Dropped channels</dt><dd class="small">dummy “-”, ECG/EKG, VNS (case-insensitive)</dd></div>
+      <div class="param"><dt>Missing-channel policy</dt><dd class="small">exclude record entirely</dd></div>
+    </div>
+
+    <h3 class="sub-title" id="p-window">3.3 Windowing &amp; labeling</h3>
+    <div class="param-grid">
+      <div class="param"><dt>Window length</dt><dd>4 s (1024 samples)</dd></div>
+      <div class="param"><dt>Stride</dt><dd>2 s (512 samples)</dd></div>
+      <div class="param"><dt>Positive rule</dt><dd class="small">seizure overlap ≥ 50% of window</dd></div>
+      <div class="param"><dt>Negative rule</dt><dd class="small">seizure overlap = 0</dd></div>
+      <div class="param"><dt>Excluded rule</dt><dd class="small">0 &lt; overlap &lt; 50% (ambiguous boundary)</dd></div>
+      <div class="param"><dt>Resulting windows</dt><dd>718,048 (2,047 positive · 44 excluded)</dd></div>
+    </div>
+
+    <h3 class="sub-title" id="p-split">3.4 Patient-independent splitting</h3>
+    <div class="param-grid">
+      <div class="param"><dt>Method</dt><dd>StratifiedGroupKFold</dd></div>
+      <div class="param"><dt>Outer folds</dt><dd>5</dd></div>
+      <div class="param"><dt>Random state</dt><dd>2026</dd></div>
+      <div class="param"><dt>Group key</dt><dd class="small">biological subject (not EDF file or window)</dd></div>
+      <div class="param"><dt>Inner split</dt><dd class="small">remaining subjects → fit / validation</dd></div>
+      <div class="param"><dt>Threshold source</dt><dd>validation only, every fold</dd></div>
+    </div>
+
+    <h3 class="sub-title" id="p-feat">3.5 Classical feature extraction</h3>
+    <div class="param-grid">
+      <div class="param"><dt>PSD method</dt><dd>Welch, nperseg = 256</dd></div>
+      <div class="param"><dt>Spectral bands</dt><dd class="small">δ 0.5–4 · θ 4–8 · α 8–13 · β 13–30 · low-γ 30–40 Hz</dd></div>
+      <div class="param"><dt>Time-domain features</dt><dd class="small">variance, RMS, line length</dd></div>
+      <div class="param"><dt>Feature columns</dt><dd>184 (23 ch × 8 features)</dd></div>
+      <div class="param"><dt>Scaler</dt><dd>StandardScaler, fit-subjects only</dd></div>
+    </div>
+
+    <h3 class="sub-title" id="p-classical">3.6 Classical models</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Hyperparameter</th><th>Logistic Regression</th><th>Random Forest</th></tr></thead>
+        <tbody>
+          <tr><td>Class weighting</td><td class="mono">balanced</td><td class="mono">balanced</td></tr>
+          <tr><td>Max iterations</td><td class="num">1000</td><td class="mono">—</td></tr>
+          <tr><td>n_estimators</td><td class="mono">—</td><td class="num">200</td></tr>
+          <tr><td>max_depth</td><td class="mono">—</td><td class="num">12</td></tr>
+          <tr><td>Random state</td><td class="num">2026</td><td class="num">2026</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3 class="sub-title" id="p-cnn-arch">3.7 Standard 1D CNN — architecture</h3>
+    <p>Input tensor <code>[23 channels × 1024 samples]</code>. Three convolutional blocks, global average pool, one linear output (raw logit; sigmoid applied only inside the loss).</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Block</th><th class="num">Out ch.</th><th class="num">Kernel</th><th class="num">Stride</th><th class="num">Padding</th><th>BatchNorm</th><th class="num">MaxPool</th><th class="num">Sequence len. after</th></tr></thead>
+        <tbody>
+          <tr><td>1</td><td class="num">32</td><td class="num">7</td><td class="num">1</td><td class="num">3</td><td>yes</td><td class="num">4</td><td class="num">256</td></tr>
+          <tr><td>2</td><td class="num">64</td><td class="num">5</td><td class="num">1</td><td class="num">2</td><td>yes</td><td class="num">4</td><td class="num">64</td></tr>
+          <tr><td>3</td><td class="num">128</td><td class="num">3</td><td class="num">1</td><td class="num">1</td><td>no</td><td class="mono">—</td><td class="num">64 → 1 (GAP)</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="param-grid">
+      <div class="param"><dt>Trainable parameters</dt><dd>40,513</dd></div>
+      <div class="param"><dt>Head</dt><dd class="small">GlobalAveragePool1d → Linear(1)</dd></div>
+      <div class="param"><dt>Output</dt><dd class="small">one raw logit per window</dd></div>
+    </div>
+
+    <h3 class="sub-title" id="p-cnn-train">3.8 Standard 1D CNN — training</h3>
+    <div class="param-grid">
+      <div class="param"><dt>Optimizer</dt><dd>Adam</dd></div>
+      <div class="param"><dt>Learning rate</dt><dd>1 × 10⁻³</dd></div>
+      <div class="param"><dt>Loss</dt><dd class="small">BCEWithLogits, pos_weight = n₋ / n₊ (per fold, fit-split only)</dd></div>
+      <div class="param"><dt>Batch size</dt><dd>64</dd></div>
+      <div class="param"><dt>Max epochs</dt><dd>3</dd></div>
+      <div class="param"><dt>Early-stopping patience</dt><dd>2 epochs, on validation AUROC</dd></div>
+      <div class="param"><dt>Checkpoint rule</dt><dd class="small">best validation AUROC epoch, not last</dd></div>
+      <div class="param"><dt>Seed</dt><dd>2026</dd></div>
+      <div class="param"><dt>Device</dt><dd>CPU</dd></div>
+    </div>
+
+    <h3 class="sub-title" id="p-eval">3.9 Evaluation protocol</h3>
+    <div class="param-grid">
+      <div class="param"><dt>Threshold rule</dt><dd class="small">Youden's J, maximized on validation scores only</dd></div>
+      <div class="param"><dt>Reported metrics</dt><dd class="small">AUROC, sensitivity, specificity, confusion matrix</dd></div>
+      <div class="param"><dt>Aggregation</dt><dd class="small">mean ± std across 5 outer folds</dd></div>
+      <div class="param"><dt>Scope</dt><dd class="small">window-level only — no event merging yet (§5)</dd></div>
+    </div>
+  </section>
+
+  <!-- ============ RESULTS ============ -->
+  <section id="results">
+    <div class="section-head"><span class="section-num">§4</span><h2 class="section-title">Results</h2></div>
+
+    <h3 class="sub-title">Three-model comparison</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Model</th><th class="num">AUROC</th><th class="num">Sensitivity</th><th class="num">Specificity</th></tr></thead>
+        <tbody>
+          <tr><td>Logistic Regression</td><td class="num">0.7898 ± 0.1064</td><td class="num">0.6126 ± 0.2015</td><td class="num">0.8785 ± 0.0864</td></tr>
+          <tr class="hl"><td>Random Forest</td><td class="num">0.9085 ± 0.0739</td><td class="num">0.6577 ± 0.2352</td><td class="num">0.8404 ± 0.1452</td></tr>
+          <tr><td>Standard 1D CNN</td><td class="num">0.7993 ± 0.0964</td><td class="num">0.6153 ± 0.1980</td><td class="num">0.7960 ± 0.1849</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3 class="sub-title">CNN, per outer fold</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Fold</th><th>Held-out subjects</th><th class="num">n fit</th><th class="num">n test</th><th class="num">AUROC</th><th class="num">Sens.</th><th class="num">Spec.</th></tr></thead>
+        <tbody>
+          <tr><td>0</td><td class="mono">chb01, chb07</td><td class="num">436,668</td><td class="num">137,362</td><td class="num">0.8343</td><td class="num">0.6583</td><td class="num">0.8567</td></tr>
+          <tr><td>1</td><td class="mono">chb06, chb11</td><td class="num">392,016</td><td class="num">115,310</td><td class="num">0.8058</td><td class="num">0.5434</td><td class="num">0.8697</td></tr>
+          <tr class="flag"><td>2</td><td class="mono">chb02, chb04, chb08</td><td class="num">398,538</td><td class="num">146,076</td><td class="num">0.6291</td><td class="num">0.3027</td><td class="num">0.0096</td></tr>
+          <tr><td>3</td><td class="mono">chb05, chb09</td><td class="num">472,487</td><td class="num">176,107</td><td class="num">0.8007</td><td class="num">0.9143</td><td class="num">0.4359</td></tr>
+          <tr><td>4</td><td class="mono">chb03, chb10</td><td class="num">399,874</td><td class="num">143,149</td><td class="num">0.9268</td><td class="num">0.6580</td><td class="num">0.9665</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="callout critical">Fold 2 (shaded row) is the outlier discussed in §5 — specificity of 0.01 means the model called almost every test window positive at its validation-chosen threshold.</div>
+  </section>
+
+  <!-- ============ DISCUSSION ============ -->
+  <section id="discussion" class="discuss">
+    <div class="section-head"><span class="section-num">§5</span><h2 class="section-title">Discussion</h2></div>
+
+    <h3>Performance in context</h3>
+    <p>
+      A 40,513-parameter CNN reading raw filtered voltage lands within 0.11 AUROC of a random
+      forest built on hand-engineered spectral features, and ahead of logistic regression on the
+      same features. That is a reasonable outcome for a first "standard" architecture, not a
+      disappointing one — the Grand Development Plan frames the Standard CNN as a pipeline
+      sanity check, with the parameter-efficiency argument reserved for the Compact CNN still to
+      come. The relevant comparison ahead is not "which model has the highest AUROC" but "how much
+      AUROC does the compact model give up per parameter and per millisecond of inference it saves."
+    </p>
+
+    <h3>The fold 2 anomaly</h3>
+    <p>
+      Fold 2 holds out chb02, chb04, and chb08 for testing, and its validation subjects are chb06
+      and chb07. Its specificity of 0.0096 means the validation-selected threshold, applied to
+      these three unseen subjects, classifies almost every window positive. Two candidate
+      explanations follow directly from the design: chb08 alone contributes 462 of the fit set's
+      positive windows — over five times chb02's 88 — so the pos_weight this fold computed
+      (328.9, the highest of the five folds) was tuned against a fit-subject mix that does not
+      resemble fold 2's held-out subjects. And because the decision threshold is fixed by Youden's
+      J on chb06/chb07 alone, it inherits whatever operating point suits those two subjects,
+      with no guarantee it transfers to chb02/04/08's signal amplitude or noise floor. This is a
+      concrete illustration of the patient-variability problem the pipeline is built to expose,
+      not to hide behind a single averaged number.
+    </p>
+
+    <h3>Patient variability, not pipeline instability</h3>
+    <p>
+      Sensitivity and specificity both carry standard deviations near 0.18–0.20 across folds —
+      larger than the deviation on AUROC itself. Gate E's own instability check (no NaN/Inf loss,
+      loss strictly decreasing) passes cleanly on every fold; the variability lives in <em>which
+      subjects</em> a fold happens to test on, not in unstable training. That distinction matters
+      for how the numbers should be read: a single mean AUROC understates how differently the
+      current model behaves from one held-out patient to the next, which is precisely the
+      generalization gap the wider seizure-detection literature keeps flagging as unresolved.
+    </p>
+
+    <h3>Sensitivity to archive size</h3>
+    <p>
+      The same pipeline, same seed, same architecture, run first on 6 subjects and then on 11,
+      moved mean CNN AUROC from 0.6413 to 0.7993 and tightened the standard deviation from 0.1786
+      to 0.0964. Neither number should be treated as a settled estimate of this model's ceiling —
+      both are a function of how much of the ~24-subject archive is currently on disk. The
+      pipeline is built to re-derive every one of these figures automatically whenever the archive
+      grows again (see <code>CLAUDE.md</code>'s re-run discipline), so the expectation going
+      forward is that this table keeps moving, not that it has converged.
+    </p>
+
+    <h3>What this report cannot yet claim</h3>
+    <p>
+      Every metric above is a <em>window-level</em> statistic: is this isolated 4-second slice
+      seizure or not. It says nothing yet about the metric that actually matters for a wearable or
+      bedside monitor — false positives per hour of continuous recording, and whether contiguous
+      positive windows correctly merge into one detected seizure event rather than being counted
+      seizure-by-seizure or window-by-window. That event-level scoring stage (<code>C-EVENT</code>
+      in the development plan) has not been built yet, so no statement here should be read as a
+      claim about real-world alarm burden.
+    </p>
+
+    <h3>Threats to validity</h3>
+    <p>
+      The archive is 11 of roughly 24 subjects, so class balance, per-subject seizure counts, and
+      fold composition are all provisional. Six of the 236 records were read through an MNE
+      fallback path rather than strict EDF-compliant parsing (a documented, legitimate CHB-MIT
+      quirk, not corruption) — their header metadata is trusted, but they represent a slightly
+      lower-confidence subset. No external dataset (TUSZ) has been evaluated, so nothing here
+      speaks to cross-institution generalization.
+    </p>
+
+    <h3>Where this points next</h3>
+    <p>
+      Gate E's pass unlocks the Compact CNN (<code>C-LITE</code>) under the identical protocol
+      documented in §3 — same splits, same loss policy, same threshold rule — so that its
+      accuracy-vs-efficiency trade-off against this Standard CNN is measured on a like-for-like
+      basis. Fold 2's collapse is worth a direct look before that comparison is trusted: whether a
+      different pos_weight cap, a validation set drawn from more than two subjects, or simply the
+      archive's continued growth resolves it.
+    </p>
+  </section>
+
+  <!-- ============ STATUS ============ -->
+  <section id="status">
+    <div class="section-head"><span class="section-num">§6</span><h2 class="section-title">Status against the development plan</h2></div>
+    <p>Gate A is the one expected exception: it checks against the <em>full</em> 664-file, 24-subject archive, which is not yet downloaded. Every other check it runs — sampling rate, seizure-interval validity, channel inventory — passes on the 236 records present.</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Gate</th><th>Checks</th><th>Status</th></tr></thead>
+        <tbody>
+          <tr><td>A — Data</td><td>File/seizure counts vs. full archive</td><td><span class="pill partial">expected shortfall</span></td></tr>
+          <tr><td>B — Labels + channels</td><td>Uniform 23-channel layout</td><td><span class="pill pass">pass</span></td></tr>
+          <tr><td>C — Patient splits</td><td>Zero subject leakage</td><td><span class="pill pass">pass</span></td></tr>
+          <tr><td>D — Baselines</td><td>All folds, val-only threshold</td><td><span class="pill pass">pass</span></td></tr>
+          <tr><td>E — Standard CNN</td><td>Stable training, full eval path</td><td><span class="pill pass">pass</span></td></tr>
+          <tr><td>F — Compact CNN</td><td>Not attempted</td><td><span class="pill pending">next up</span></td></tr>
+          <tr><td>G — Event evaluation</td><td>FP/hour, event sensitivity</td><td><span class="pill pending">not started</span></td></tr>
+          <tr><td>H — Efficiency + XAI</td><td>Latency, size, Grad-CAM</td><td><span class="pill pending">not started</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <footer class="report-foot">
+    <span>Source: <code>ralph/cnn-main-network</code></span>
+    <span>Full narrative log: <code>prompt &amp; markdown/progress.md</code></span>
+  </footer>
+
+</div>
+
+<script>
+  (function () {
+    try {
+      var links = Array.prototype.slice.call(document.querySelectorAll('#toc a'));
+      var sections = links.map(function (a) { return document.querySelector(a.getAttribute('href')); }).filter(Boolean);
+      if (!sections.length) return;
+      var obs = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          var id = '#' + entry.target.id;
+          var link = links.find(function (a) { return a.getAttribute('href') === id; });
+          if (!link) return;
+          if (entry.isIntersecting) {
+            links.forEach(function (a) { a.classList.remove('active'); });
+            link.classList.add('active');
+          }
+        });
+      }, { rootMargin: '-10% 0px -70% 0px' });
+      sections.forEach(function (s) { obs.observe(s); });
+    } catch (e) { /* TOC highlighting is a non-essential enhancement */ }
+  })();
+</script>

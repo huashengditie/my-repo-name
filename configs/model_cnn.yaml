@@ -1,0 +1,34 @@
+# Standard 1D CNN ("Suggested D0", Gate E) architecture, per the "Deep learning
+# progression" section of Grand Development Plan.md:
+#   Input [C x 1024] -> Conv1D -> BatchNorm -> ReLU -> MaxPool
+#                     -> Conv1D -> BatchNorm -> ReLU -> MaxPool
+#                     -> Conv1D -> ReLU
+#                     -> GlobalAveragePooling -> Linear(1) -> seizure logit
+#
+# C (in_channels) is NOT duplicated here -- src/eeg_seizure/models/cnn1d.py derives
+# it from len(canonical_channels) in configs/channels_chbmit.yaml (23) at
+# construction time. Input width (1024) is likewise derived elsewhere (window_seconds
+# * sampling_rate from configs/preprocessing.yaml / src/eeg_seizure/data/windows.py),
+# not hardcoded in this file.
+
+conv_blocks:
+  - out_channels: 32
+    kernel_size: 7
+    stride: 1
+    padding: 3
+    batch_norm: true
+    pool_size: 4
+  - out_channels: 64
+    kernel_size: 5
+    stride: 1
+    padding: 2
+    batch_norm: true
+    pool_size: 4
+  - out_channels: 128
+    kernel_size: 3
+    stride: 1
+    padding: 1
+    batch_norm: false
+    pool_size: null
+
+num_classes: 1

@@ -1,0 +1,6 @@
+fold,experiment_id,n_fit,n_val,n_test,n_test_positive,n_test_negative,auroc,sensitivity,specificity,threshold,threshold_selected_on,epochs_run,best_epoch,pos_weight,checkpoint_path
+0,cnn1d_fold_0,436668,143974,137362,199,137163,0.8342871374435221,0.6582914572864321,0.8567397913431465,0.6180077791213989,val,3,0,324.62863534675614,/Users/yiranzhu/Desktop/python/EEG Elipsy/results/checkpoints/cnn1d_fold_0.pt
+1,cnn1d_fold_1,392016,210678,115310,449,114861,0.8058053184027663,0.5434298440979956,0.8697294991337355,0.4008307456970215,val,3,1,323.5165562913907,/Users/yiranzhu/Desktop/python/EEG Elipsy/results/checkpoints/cnn1d_fold_1.pt
+2,cnn1d_fold_2,398538,173390,146076,631,145445,0.629085915300434,0.30269413629160064,0.8511052287806388,6.109832286834717,val,3,1,328.9155629139073,/Users/yiranzhu/Desktop/python/EEG Elipsy/results/checkpoints/cnn1d_fold_2.pt
+3,cnn1d_fold_3,472487,69410,176107,420,175687,0.8007092429257985,0.9142857142857143,0.4359172847165698,-3.4334664344787598,val,3,1,304.22416020671835,/Users/yiranzhu/Desktop/python/EEG Elipsy/results/checkpoints/cnn1d_fold_3.pt
+4,cnn1d_fold_4,399874,174981,143149,348,142801,0.9267805925889794,0.6580459770114943,0.9665478533063494,-1.279343605041504,val,3,1,275.3469246717346,/Users/yiranzhu/Desktop/python/EEG Elipsy/results/checkpoints/cnn1d_fold_4.pt

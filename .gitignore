@@ -1,0 +1,24 @@
+physionet.org/
+ralph/
+.DS_Store
+**/.DS_Store
+__pycache__/
+*.pyc
+.venv/
+venv/
+*.egg-info/
+data/raw/
+data/cache/
+results/checkpoints/
+*.edf
+*.pt
+*.pth
+*.ckpt
+build/
+dist/
+.pytest_cache/
+.ruff_cache/
+
+# Large derived cache (rebuild with scripts/build_features.py; distributed via GitHub Release)
+data/interim/features.parquet
+_to_delete/
